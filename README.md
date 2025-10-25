@@ -446,7 +446,7 @@ Advantages of CHsel method:
 - One less configuration step per measurement
 - Specific situation when some external signal wants to set the direction of the transmitter and receiver
 
-Example, CHselUtilization.ino shows the way that I have configured the device for hardware-level channel selection. 
+Example, "CHsel_Utilization.ino" shows the way that I have configured the device for hardware-level channel selection. 
 
 # Possible improvements
 Contributions welcome! Areas for improvement:
