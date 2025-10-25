@@ -6,8 +6,6 @@ I created this fork to contribute additional examples and provide more detailed 
 - Hardware Overview
 - How It Works
 - Hardware Connections
-- Key Concepts
-- Configuration
 - Getting Started
 - Interpreting Results
 - Troubleshooting
@@ -45,7 +43,7 @@ Required Components:
 Required between transducers and TDC1000 for AC coupling
 
 # How It Works
-### Channel Selection and Transducer Configuration
+## Channel Selection and Transducer Configuration
 ```
 Physical Setup
      Transducer A                    Transducer B
@@ -111,10 +109,51 @@ Used for: Rapid bidirectional flow measurements
 Advantages: Faster updates, less software overhead
 Disadvantages: Less control, more complex timing coordination
 
+# Hardware Connections
+## Signal Flow Diagram for Modes 1 and 2**
+```
+Microcontroller              TDC1000                    TDC7200
+     |                          |                          |
+     |---SPI Config------------>|                          |
+     |---SPI Config----------------------------------->|
+     |                          |                          |
+     |---TRIGGER (20µs)-------->|                          |
+     |                          |                          |
+     |                          |--START pulse------------>| (Timer starts)
+     |                          |                          |
+     |                          |--Ultrasonic burst------->| (TX transducer)
+     |                          |                          |
+     |                          |<--Echo received----------| (RX transducer)
+     |                          |                          |
+     |                          |--STOP pulse 1----------->| (Capture time 1)
+     |                          |--STOP pulse 2----------->| (Capture time 2)
+     |                          |--STOP pulse 3----------->| (Capture time 3)
+     |                          |--STOP pulse 4----------->| (Capture time 4)
+     |                          |--STOP pulse 5----------->| (Capture time 5)
+     |                          |                          |
+     |<--INT goes LOW---------------------------------| (Done!)
+     |                          |                          |
+     |---Read measurements via SPI----------------->|
+```
+     
+## Transducer Setup
+     [Transducer A]                    [Transducer B]
+     TX1 ─────┐                        ┌───── TX2
+              │                        │
+     RX2 ──┐  │    <<<< Water >>>>    │  ┌── RX1
+           │  │                        │  │
+         [300pF]                    [300pF]
+           │  │                        │  │
+        To TDC1000              To TDC1000
+**Important: 300pF capacitors provide AC coupling and are required for proper operation.**
 
+# Getting started 
+## Mode 0
+
+## Mode 1 and 2
 **The Measurement Sequence**
 
-This system performs two sequential measurements for bidirectional flow detection:
+In modes 1 and 2, the system performs two sequential measurements for bidirectional flow detection:
 
 **Measurement 1: Channel 1 (A → B)**
 ```
@@ -163,42 +202,6 @@ while (digitalRead(PIN_TDC7200_INT) == HIGH) {
 ```
 
 No interrupt handler needed! Simple polling works because measurements are fast (30-120µs typically).
-# Hardware Connections
-### Signal Flow Diagram for Modes 1 and 2
-```
-Microcontroller              TDC1000                    TDC7200
-     |                          |                          |
-     |---SPI Config------------>|                          |
-     |---SPI Config----------------------------------->|
-     |                          |                          |
-     |---TRIGGER (20µs)-------->|                          |
-     |                          |                          |
-     |                          |--START pulse------------>| (Timer starts)
-     |                          |                          |
-     |                          |--Ultrasonic burst------->| (TX transducer)
-     |                          |                          |
-     |                          |<--Echo received----------| (RX transducer)
-     |                          |                          |
-     |                          |--STOP pulse 1----------->| (Capture time 1)
-     |                          |--STOP pulse 2----------->| (Capture time 2)
-     |                          |--STOP pulse 3----------->| (Capture time 3)
-     |                          |--STOP pulse 4----------->| (Capture time 4)
-     |                          |--STOP pulse 5----------->| (Capture time 5)
-     |                          |                          |
-     |<--INT goes LOW---------------------------------| (Done!)
-     |                          |                          |
-     |---Read measurements via SPI----------------->|
-```
-     
-### Transducer Setup
-     [Transducer A]                    [Transducer B]
-     TX1 ─────┐                        ┌───── TX2
-              │                        │
-     RX2 ──┐  │    <<<< Water >>>>    │  ┌── RX1
-           │  │                        │  │
-         [300pF]                    [300pF]
-           │  │                        │  │
-        To TDC1000              To TDC1000
-**Important: 300pF capacitors provide AC coupling and are required for proper operation.**
+
 
 
