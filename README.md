@@ -432,6 +432,22 @@ else {
     // Static water (no flow)
 }
 ```
+## Mode 1 Hardware-based Channel Selection
+This version uses the CHsel hardware pin to select channels instead of software configuration via SPI. The TDC1000 is configured once in "External" mode, then channel selection is controlled by toggling the CHsel pin.
+
+CHsel Pin Operation:
+```
+CHsel = LOW  → Channel 1 (TX1→RX2, A→B)
+CHsel = HIGH → Channel 2 (TX2→RX1, B→A)
+ ```
+
+Advantages of CHsel method:
+- Hardware-controlled, more deterministic timing
+- One less configuration step per measurement
+- Specific situation when some external signal wants to set the direction of the transmitter and receiver
+
+Example, CHselUtilization.ino shows the way that I have configured the device for hardware-level channel selection. 
+
 # Possible improvements
 Contributions welcome! Areas for improvement:
 
