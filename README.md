@@ -283,9 +283,9 @@ Contributions welcome! Areas for improvement:
 GNU GENERAL PUBLIC LICENSE; Version 3, 29 June 2007
 
 # Acknowledgments
-Thanks to [Yveaux's original repository](https://github.com/Yveaux/TDC1000)
-Texas Instruments for TDC1000/TDC7200 datasheets
-Arduino community for development tools
+- Thanks to [Yveaux's original repository](https://github.com/Yveaux/TDC1000)
+- Texas Instruments for TDC1000/TDC7200 datasheets
+- Arduino community for development tools
 
 # References
 
