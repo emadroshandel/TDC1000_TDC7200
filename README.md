@@ -96,6 +96,7 @@ while (digitalRead(PIN_TDC7200_INT) == HIGH) {
 No interrupt handler needed! Simple polling works because measurements are fast (30-120µs typically).
 # Hardware Connections
 ### Signal Flow Diagram
+```
 Microcontroller              TDC1000                    TDC7200
      |                          |                          |
      |---SPI Config------------>|                          |
@@ -118,7 +119,7 @@ Microcontroller              TDC1000                    TDC7200
      |<--INT goes LOW---------------------------------| (Done!)
      |                          |                          |
      |---Read measurements via SPI----------------->|
-
+```
      
 ### Transducer Setup
      [Transducer A]                    [Transducer B]
