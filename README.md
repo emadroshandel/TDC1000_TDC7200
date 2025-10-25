@@ -121,9 +121,9 @@ Microcontroller              TDC1000                    TDC7200
      |                          |                          |
      |                          |--START pulse------------>| (Timer starts)
      |                          |                          |
-     |                          |--Ultrasonic burst------->| (TX transducer)
+     |                          |--Ultrasonic burst---------------------------------->| (TX transducer)
      |                          |                          |
-     |                          |<--Echo received----------| (RX transducer)
+     |                          |<--Echo received-------------------------------------| (RX transducer)
      |                          |                          |
      |                          |--STOP pulse 1----------->| (Capture time 1)
      |                          |--STOP pulse 2----------->| (Capture time 2)
