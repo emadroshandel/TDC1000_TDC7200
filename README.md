@@ -203,7 +203,6 @@ while (digitalRead(PIN_TDC7200_INT) == HIGH) {
 
 No interrupt handler needed! Simple polling works because measurements are fast (30-120µs typically).
 
-**
 
 **TDC7200 Measurement Modes**
 I used Measurement Mode 2, which measuresthe time between consecutive stops in example (TDC1000_TDC7200_Integration):
@@ -215,16 +214,16 @@ Measurement Mode 2 Output:
   TIME3 = STOP3 - STOP2      ← Time between stops
   TIME4 = STOP4 - STOP3      ← Time between stops
   TIME5 = STOP5 - STOP4      ← Time between stops
-``
+```
 For flow measurement, I use TIME1 (first STOP time).
 
-Flow Measurement Physics
+### Flow Measurement Physics:
 
 Time-of-Flight in Flowing Water
 
 The presence of flow affects transit time asymmetrically:
 
-```++
+```
 Static Water (v = 0):
   TOF_AB = L / c
   TOF_BA = L / c
@@ -239,16 +238,22 @@ Where:
 L = distance between transducers (meters)
 c = speed of sound in water (~1482 m/s at 20°C)
 v = flow velocity (m/s)
+```
 
-Flow Velocity Calculation
+**Flow Velocity Calculation"**
+```
 Simplified approximation (valid when v << c):
 Δt = TOF_AB - TOF_BA
 
 v ≈ (c² × Δt) / (2 × L)
 More accurate formula (better for higher flows):
 v = (c² / 2L) × [(TOF_BA - TOF_AB) / (TOF_BA × TOF_AB)]
-Flow Direction
-cppdouble tof_diff = tof_ch1 - tof_ch2;
+```
+
+**Flow Direction:**
+
+```C++
+double tof_diff = tof_ch1 - tof_ch2;
 
 if (tof_diff > 0) {
     // TOF_AB > TOF_BA
