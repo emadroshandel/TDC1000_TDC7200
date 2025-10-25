@@ -3,12 +3,20 @@ This project is a fork of [Yveaux's original repository](https://github.com/Yvea
 I created this fork to contribute additional examples and provide more detailed explanations for users who want to better understand and apply the existing libraries.
 
 # Table of Contents
-Hardware Overview
-How It Works
-Hardware Connections
-Key Concepts
-Configuration
-Getting Started
-Interpreting Results
-Troubleshooting
-Technical Details
+- Hardware Overview
+
+- How It Works
+  
+- Hardware Connections
+  
+- Key Concepts
+  
+- Configuration
+  
+- Getting Started
+  
+- Interpreting Results
+  
+- Troubleshooting
+  
+- Technical Details
