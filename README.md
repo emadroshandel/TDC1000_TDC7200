@@ -26,10 +26,10 @@ Required Components:
 - Captures up to 5 STOP events per measurement
 - Communicates via SPI
 
-**Ultrasonic Transducers (2x)**
+**Ultrasonic Transducers**
 
-- Recommended: 1 MHz transducers for water
-- Mounted facing each other for through-transmission
+- For the water level application, a single transducer is enough
+- For water flow applications, two Transducers are required 
 
 
 **Microcontroller**
@@ -155,7 +155,7 @@ This repository includes two fully functional and thoroughly commented examples.
 The Water Level Monitor example showcases a practical application of the TDC1000 and TDC7200, configured for a single-transducer system to measure liquid levels.
 This application uses ultrasonic echo reflection to detect the water level by:
 
-- Sending an ultrasonic pulse downward through air
+- Sending an ultrasonic pulse downward through the air
 - Receiving the echo reflected from the water surface
 - Analyzing the echo frequency to determine the water level
 - Tracking frequency changes over time
