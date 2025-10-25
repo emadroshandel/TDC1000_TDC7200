@@ -7,7 +7,7 @@ I created this fork to contribute additional examples and provide more detailed 
 - How It Works
 - Hardware Connections
 - Examples overview
-- Future works for further contribution 
+- Possible improvements
 - Acknowledgement 
 - References
 
@@ -148,7 +148,169 @@ Microcontroller              TDC1000                    TDC7200
 **Important: 300pF capacitors provide AC coupling and are required for proper operation.**
 
 # Getting started 
+
+This repository includes two fully functional and thoroughly commented examples. Each aims to comprehensively demonstrate the measurement capabilities of the TDC1000 and TDC7200 across a range of scenarios.
+
 ## Mode 0
+The Water Level Monitor example showcases a practical application of the TDC1000 and TDC7200, configured for a single-transducer system to measure liquid levels.
+This application uses ultrasonic echo reflection to detect the water level by:
+
+- Sending an ultrasonic pulse downward through air
+- Receiving the echo reflected from the water surface
+- Analyzing the echo frequency to determine the water level
+- Tracking frequency changes over time
+
+### Key TDC1000 Settings
+
+**RX Configuration**
+
+```C++
+Water Level (Mode 0):
+usafe.setRx(true);  // Multi-echo enabled
+
+// Flow Measurement (Mode 1):
+usafe.setRx(false);  // Single echo
+```
+
+Why multi-echo?
+
+- Allows receiving multiple reflections (surface, bottom, walls)
+- Provides richer frequency information
+- Necessary for Mode 0 operation
+
+**Sensitivity Settings**
+```C++
+// Water Level - Higher gain needed
+usafe.setRxSensitivity(
+    TDC1000::RxDacEchoThreshold::m410mV,
+    TDC1000::RxPgaGain::g21dB,           
+    TDC1000::RxLnaFbMode::resistive
+);
+```
+
+Why higher gain?
+
+- Echo is weaker (signal travels twice the distance)
+- Energy lost at reflection
+- Air attenuation
+
+**TX Configuration**
+
+```C++
+// Water Level - Fewer pulses
+usafe.setTx(TDC1000_CLKIN_FREQ_DIV, 8, 0, true);  // 8 cycles
+
+// Flow - More pulses
+usafe.setTx(TDC1000_CLKIN_FREQ_DIV, 10, 0, true);  // 10 cycles
+```
+
+Why fewer pulses?
+
+- Shorter burst = better time resolution
+- Echo arrives quickly (short distance)
+- Reduces ringing interference
+
+**Timing Windows**
+
+```C++
+//Water Level - Shorter times
+usafe.setTofMeasuementShort(
+    TDC1000::T0::ClkInDiv1,
+    TDC1000::TxAutoZeroPeriod::T0x64,    
+    TDC1000::TxBlankPeriod::T0x32,       
+    TDC1000::TxEchoTimeoutPeriod::disabled  
+);
+
+// Flow - Longer times
+usafe.setTofMeasuementShort(
+    TDC1000::T0::ClkInDiv1,
+    TDC1000::TxAutoZeroPeriod::T0x128,   // 16µs
+    TDC1000::TxBlankPeriod::T0x128,      // 16µs
+    TDC1000::TxEchoTimeoutPeriod::T0x1024  // 128µs
+);
+```
+
+Why shorter times?
+
+- Echo returns quickly in level sensing
+- Shorter blanking = better for close surfaces
+- Timeout disabled (level varies widely)
+
+**Mode Selection**
+```C++
+// Water Level
+usafe.setMeasureTOF(
+    TDC1000::TxRxChannel::Channel1,
+    TDC1000::TofMode::Mode0  // With setRx(true) = echo mode
+);
+
+// Flow
+usafe.setMeasureTOF(
+    TDC1000::TxRxChannel::Channel1,  // or Channel2
+    TDC1000::TofMode::Mode1  // Manual channel switching
+);
+```
+
+### Water level measurement
+
+To use this for actual water level measurement, you must calibrate for your specific setup:
+
+**Step 1: Establish Baseline Measurements**
+
+- Prepare container: Clean, empty, dry
+- Mount transducer: Fixed position, facing down
+- Start system: Run water level monitor code
+- Record empty frequency: Note the frequency (e.g., 179.2 kHz)
+
+**Step 2: Measure Known Levels**
+
+Fill the container to known levels and record frequencies:
+
+```
+Level | Height (cm) | Frequency (kHz) | Notes
+------|-------------|-----------------|--------
+Empty |      0      |     179.2       | Baseline
+ 25%  |      5      |     181.4       |
+ 50%  |     10      |     183.1       |
+ 75%  |     15      |     185.3       |
+Full  |     20      |     186.8       | Maximum
+Tips:
+```
+
+- Wait 10 seconds at each level for water to settle
+- Record 10 measurements and average
+- Mark the container with lines for repeatability
+
+**Step 3: Create Calibration Function**
+
+Option A: Lookup Table (Simple)
+
+```C++
+double estimateLevel(double freq_khz) {
+    if (freq_khz < 180.0) return 0.0;       // Empty
+    if (freq_khz < 182.0) return 25.0;      // Quarter
+    if (freq_khz < 184.0) return 50.0;      // Half
+    if (freq_khz < 186.0) return 75.0;      // Three-quarters
+    return 100.0;                           // Full
+}
+```
+
+Option B: Linear Interpolation (more continuous)
+
+```C++
+double estimateLevel(double freq_khz) {
+    // Based on calibration data
+    const double freq_empty = 179.2;  // Your empty frequency
+    const double freq_full = 186.8;   // Your full frequency
+    const double height_range = 20.0; // Container height in cm
+    
+    // Linear mapping
+    double percent = (freq_khz - freq_empty) / (freq_full - freq_empty);
+    percent = constrain(percent, 0.0, 1.0);  // Clamp to 0-100%
+    
+    return percent * height_range;  // Returns height in cm
+}
+```
 
 ## Mode 1 and 2
 **The Measurement Sequence**
@@ -205,7 +367,7 @@ No interrupt handler needed! Simple polling works because measurements are fast 
 
 
 **TDC7200 Measurement Modes**
-I used Measurement Mode 2, which measuresthe time between consecutive stops in example (TDC1000_TDC7200_Integration):
+I used Measurement Mode 2, which measures the time between consecutive stops in example (TDC1000_TDC7200_Integration):
 
 Measurement Mode 2 Output:
 ```
@@ -231,7 +393,7 @@ Static Water (v = 0):
 
 With Flow (v ≠ 0):
   TOF_AB = L / (c + v)  ← Faster with flow
-  TOF_BA = L / (c - v)  ← Slower against flow
+  TOF_BA = L / (c - v)  ← Slower against the flow
   TOF_AB ≠ TOF_BA
 Where:
 
@@ -270,7 +432,7 @@ else {
     // Static water (no flow)
 }
 ```
-# Contributing
+# Possible improvements
 Contributions welcome! Areas for improvement:
 
 - Temperature compensation
