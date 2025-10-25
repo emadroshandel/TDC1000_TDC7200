@@ -448,6 +448,33 @@ Advantages of CHsel method:
 
 Example, "CHsel_Utilization.ino" shows the way that I have configured the device for hardware-level channel selection. 
 
+### KEY DIFFERENCES FROM SOFTWARE CHANNEL SWITCHING VERSION:
+1. CHANNEL SELECTION METHOD:
+```
+Software:  usafe.setMeasureTOF(Channel1/Channel2, Mode1) before each measurement
+CHsel:     digitalWrite(CHsel, LOW/HIGH) before each measurement
+```
+
+2. INITIAL CONFIGURATION:
+```
+Software:  setMeasureTOF() called twice per loop
+CHsel:     setMeasureTOF(External, Mode1) called once in setup
+```
+
+3. TIMING:
+   
+```
+Software:  Includes SPI transaction time for reconfiguration
+CHsel:     Faster, only GPIO toggle needed
+```
+
+4. SETTLING TIME:
+   
+```
+Software:  10ms delay after setMeasureTOF()
+CHsel:     50ms delay after digitalWrite(CHsel) for multiplexer settling
+```
+
 # Possible improvements
 Contributions welcome! Areas for improvement:
 
