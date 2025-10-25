@@ -110,7 +110,7 @@ Same physical setup as Mode 1:
 - Disadvantages: Less control, more complex timing coordination
 
 # Hardware Connections
-## Signal Flow Diagram for Modes 1 and 2**
+## Signal Flow Diagram 
 ```
 Microcontroller              TDC1000                    TDC7200
      |                          |                          |
@@ -136,7 +136,7 @@ Microcontroller              TDC1000                    TDC7200
      |---Read measurements via SPI----------------->|
 ```
      
-## Transducer Setup
+## Transducer Setup for Modes 1 and 2
      [Transducer A]                    [Transducer B]
      TX1 ─────┐                        ┌───── TX2
               │                        │
@@ -270,4 +270,27 @@ else {
     // Static water (no flow)
 }
 ```
+# Contributing
+Contributions welcome! Areas for improvement:
+
+- Temperature compensation
+- Multi-path flow calculation
+- Calibration routines
+- Additional measurement modes
+- Signal quality metrics
+
+# License
+GNU GENERAL PUBLIC LICENSE; Version 3, 29 June 2007
+
+# Acknowledgments
+Thanks to [Yveaux's original repository](https://github.com/Yveaux/TDC1000)
+Texas Instruments for TDC1000/TDC7200 datasheets
+Arduino community for development tools
+
+# References
+
+- [TDC1000 Datasheet](https://github.com/Yveaux/TDC1000)
+- [TDC7200 Datasheet](https://www.ti.com/lit/ds/symlink/tdc7200.pdf)
+- [Ultrasonic Flow Measurement Theory](https://en.wikipedia.org/wiki/Ultrasonic_flow_meter)
+
 
