@@ -494,8 +494,9 @@ GNU GENERAL PUBLIC LICENSE; Version 3, 29 June 2007
 
 # References
 
-- [TDC1000 Datasheet](https://github.com/Yveaux/TDC1000)
+- [TDC1000 Datasheet](https://www.ti.com/lit/ds/symlink/tdc1000.pdf)
 - [TDC7200 Datasheet](https://www.ti.com/lit/ds/symlink/tdc7200.pdf)
+- [Ultrasonic Sensing Solution (USS) Guide](https://www.ti.com/lit/pdf/slaaes9)
 - [Ultrasonic Flow Measurement Theory](https://en.wikipedia.org/wiki/Ultrasonic_flow_meter)
 
 
