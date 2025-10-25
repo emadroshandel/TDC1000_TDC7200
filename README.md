@@ -6,10 +6,10 @@ I created this fork to contribute additional examples and provide more detailed 
 - Hardware Overview
 - How It Works
 - Hardware Connections
-- Getting Started
-- Interpreting Results
-- Troubleshooting
-- Technical Details
+- Examples overview
+- Future works for further contribution 
+- Acknowledgement 
+- References
 
 # Hardware Overview
 Required Components:
