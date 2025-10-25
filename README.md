@@ -45,8 +45,77 @@ Required Components:
 Required between transducers and TDC1000 for AC coupling
 
 # How It Works
-The Measurement Sequence
+### Channel Selection and Transducer Configuration
+```
+Physical Setup
+     Transducer A                    Transducer B
+     ┌─────────┐                    ┌─────────┐
+     │   TX1   │────────────────────│   RX1   │
+     │         │                    │         │
+     │   RX2   │────────────────────│   TX2   │
+     └─────────┘                    └─────────┘
+         ↓                              ↓
+      300pF cap                      300pF cap
+         ↓                              ↓
+      TDC1000                        TDC1000
+    Channel pins                   Channel pins
+```
+**TDC1000 Measurement Modes**
+The TDC1000 supports three TOF (Time-of-Flight) measurement modes:
+
+Mode 0: Fluid Level and Identification
+
+Single transducer acts as both TX and RX:
+```
+┌─────────┐
+│  TX/RX  │ ──> ultrasound ──> [boundary/fluid surface]
+└─────────┘ <── echo ←────────
+```
+
+Single transducer transmits, then switches to receive its own echo
+Used for: Level measurement, fluid identification, boundary detection
+Channel selection: Not applicable (single transducer)
+
+Mode 1: Flow Sensing (Manual Channel Switching) 
+
+```
+Two separate transducers:
+┌─────────┐                    ┌─────────┐
+│   TX1   │ ──ultrasound────> │   RX2   │  Channel 1
+│ (Xdcr A)│                    │ (Xdcr B)│
+│         │                    │         │
+│   RX1   │ <──ultrasound───── │   TX2   │  Channel 2
+└─────────┘                    └─────────┘
+```
+
+Transducer 1 transmits, Transducer 2 receives (through-transmission)
+Requires manual channel switching via software (setMeasureTOF())
+Used for: Bidirectional flow measurement, distance measurement
+Advantages: Full software control, predictable timing, easier debugging
+Channel selection: Software-controlled 
+
+Mode 2: Flow Sensing (Automatic Channel Switching)
+Same physical setup as Mode 1:
+```
+┌─────────┐                    ┌─────────┐
+│   TX1   │ ──ultrasound────> │   RX2   │  Channel 1 (auto)
+│ (Xdcr A)│                    │ (Xdcr B)│
+│         │                    │         │
+│   RX1   │ <──ultrasound───── │   TX2   │  Channel 2 (auto)
+└─────────┘                    └─────────┘
+```
+
+Same as Mode 1, but TDC1000 automatically swaps channels after each measurement
+Can be configured to swap: automatically after each measurement, or controlled by the external CHSEL pin
+Used for: Rapid bidirectional flow measurements
+Advantages: Faster updates, less software overhead
+Disadvantages: Less control, more complex timing coordination
+
+
+**The Measurement Sequence**
+
 This system performs two sequential measurements for bidirectional flow detection:
+
 **Measurement 1: Channel 1 (A → B)**
 ```
 TX1 (Transducer A) ──ultrasound──> RX2 (Transducer B)
@@ -95,7 +164,7 @@ while (digitalRead(PIN_TDC7200_INT) == HIGH) {
 
 No interrupt handler needed! Simple polling works because measurements are fast (30-120µs typically).
 # Hardware Connections
-### Signal Flow Diagram
+### Signal Flow Diagram for Modes 1 and 2
 ```
 Microcontroller              TDC1000                    TDC7200
      |                          |                          |
