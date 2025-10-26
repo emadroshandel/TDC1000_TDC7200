@@ -72,7 +72,7 @@ Single transducer acts as both TX and RX:
 
 Single transducer transmits, then switches to receive its own echo
 Used for: Level measurement, fluid identification, boundary detection
-Channel selection: Not applicable (single transducer)
+
 
 Mode 1: Flow Sensing (Manual Channel Switching) 
 
